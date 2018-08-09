@@ -15,6 +15,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Paint;
 import java.awt.Stroke;
 import java.io.IOException;
 import java.util.logging.Level;
@@ -31,11 +32,12 @@ public class DrawPane extends JComponent {
     private BasicStroke stroke_gom = new BasicStroke(30f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND);
     private BasicStroke stroke_lap = new BasicStroke(1f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND);
     private BasicStroke stroke_fib = new BasicStroke(10f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND);
+    private BasicStroke current_stroke;
     private int currentx;
     private int currenty;
     private int oldx;
     private int oldy;
-    private Color color;
+    private Color color=Color.BLACK;
     private Conexion con = new Conexion();
     private Thread t = new Thread(new Lector());
     private String valores_env;
@@ -58,7 +60,7 @@ public class DrawPane extends JComponent {
                 currenty = e.getY();
                 if (gp != null) {
                     gp.drawLine(oldx, oldy, currentx, currenty);
-                    int[] valores = {oldx, oldy, currentx, currenty};
+                    Object[] valores = {oldx, oldy, currentx, currenty,current_stroke,color};
 
                     oldx = currentx;
                     oldy = currenty;
@@ -99,23 +101,28 @@ public class DrawPane extends JComponent {
     public void goma() {
         gp.setStroke(stroke_gom);
         gp.setPaint(Color.WHITE);
+        current_stroke=stroke_gom;
     }
 
     public void lapiz() {
         gp.setStroke(stroke_lap);
         gp.setPaint(this.color);
+        current_stroke=stroke_lap;
     }
 
     public void fibron() {
         gp.setStroke(stroke_fib);
         gp.setPaint(this.color);
+        current_stroke=stroke_fib;
     }
 
-    public void getDraw(int[] valores) {
-        /**int[] fin = new int[4];
-        for (int i = 0; i < valores.length; i++) {
-            fin[i] = (Integer)valores[i];}**/
-        gp.drawLine(valores[0], valores[1], valores[2], valores[3]);
+    public void getDraw(Object[] valores) {
+        gp.setStroke((Stroke) valores[4]);
+        gp.setPaint((Paint) valores[5]);
+        gp.drawLine((int)valores[0],(int) valores[1], (int)valores[2], (int)valores[3]);
+        repaint();
+        gp.setStroke(current_stroke);
+        gp.setPaint(this.color);
 
     }
 
@@ -123,7 +130,8 @@ public class DrawPane extends JComponent {
 
         public void run() {
             try {
-                getDraw(con.getValores());
+                while (true){
+                getDraw(con.getValores());}
             } catch (IOException ex) {
                 Logger.getLogger(DrawPane.class.getName()).log(Level.SEVERE, null, ex);
             } catch (ClassNotFoundException ex) {
