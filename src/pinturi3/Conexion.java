@@ -48,7 +48,7 @@ public final class Conexion{
         
     }
 
-    public void sendValores(Object valores) throws IOException {
+    public void sendValores(Object[] valores) throws IOException {
         mensaje_env.writeObject(valores);
     }
     
