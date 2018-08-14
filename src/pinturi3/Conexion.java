@@ -25,11 +25,13 @@ public final class Conexion{
     private Socket s;
     private Object a;
     private ObjectInputStream mensaje_rec;
-    private final int port = 42066; //estamos usando el reto de los 65534 puertos
-    private final String host = "localhost";
+    private final int port; //estamos usando el reto de los 65534 puertos
+    private final String host;
     private ObjectOutputStream mensaje_env;
 
-    public Conexion() {
+    public Conexion(String host,int puerto) {
+        this.host=host;
+        this.port=puerto;
         initClient();
     }
 

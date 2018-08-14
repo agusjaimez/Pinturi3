@@ -39,7 +39,7 @@ public class DrawPane extends JComponent {
     private int oldy;
     private Color color = Color.BLACK;
     private Color color_prev;
-    private Conexion con = new Conexion();
+    private Conexion con = new Conexion("localhost",42066);
     private Thread t = new Thread(new Lector());
     private int num_stroke;
 
