@@ -43,7 +43,7 @@ public class DrawPane extends JComponent {
     private Thread t = new Thread(new Lector());
     private int num_stroke;
 
-    public DrawPane() {
+    public DrawPane(String persona) {
 
         t.start();
 
@@ -68,7 +68,7 @@ public class DrawPane extends JComponent {
                     } else {
                         num_stroke = 2;
                     }
-                    Object[] valores = {oldx, oldy, currentx, currenty, num_stroke, color};
+                    Object[] valores = {oldx, oldy, currentx, currenty, num_stroke, color,persona};
                     oldx = currentx;
                     oldy = currenty;
                     repaint();
@@ -144,6 +144,8 @@ public class DrawPane extends JComponent {
         gp.setPaint(this.color);
 
     }
+    
+
 
     private class Lector implements Runnable {
 
