@@ -40,7 +40,6 @@ public class Window {
     private JTextArea personas_txt;
     private JScrollPane personas;
     private JLabel top;
-    private Conexion con;
     private String[] contenido_txt;
     private Boolean b, a;
     private Thread t = new Thread(new Lector());
@@ -82,7 +81,6 @@ public class Window {
         windowcolor = new JFrame();
         Container content2 = windowcolor.getContentPane();
         Container content = window.getContentPane();
-        con = new Conexion("localhost", 42066);
         t.start();
 
         content.setLayout(new BorderLayout());
@@ -158,17 +156,17 @@ public class Window {
                         if (personas_txt.getText() != null) {
                             contenido_txt = personas_txt.getText().split("\n");
                             for (int i = 0; i < contenido_txt.length; i++) {
-                                if (contenido_txt[i].equals(con.getPersonas())) {
+                                if (contenido_txt[i].equals(draw.getPersonas())) {
                                     b = false;
                                 } else {
                                     b = true;
                                 }
                             }
                             if (b == true) {
-                                personas_txt.append(con.getPersonas() + "\n");
+                                personas_txt.append(draw.getPersonas() + "\n");
                             }
                         } else {
-                            personas_txt.append(con.getPersonas() + "\n");
+                            personas_txt.append(draw.getPersonas() + "\n");
                         }
                     }
 

@@ -145,6 +145,9 @@ public class DrawPane extends JComponent {
 
     }
     
+    public String getPersonas() throws IOException, ClassNotFoundException{
+    return con.getPersonas();}
+    
 
 
     private class Lector implements Runnable {
