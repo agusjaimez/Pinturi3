@@ -17,8 +17,6 @@ import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Paint;
 import java.awt.Stroke;
-import java.awt.geom.AffineTransform;
-import java.awt.image.ImageObserver;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -41,14 +39,17 @@ public class DrawPane extends JComponent {
     private int oldy;
     private Color color = Color.BLACK;
     private Color color_prev;
-    private Conexion con = new Conexion("192.168.60.174", 42066);
+    private Conexion con = new Conexion("localhost",42066);
     private Thread t = new Thread(new Lector());
     private int num_stroke;
+    private Object[] personas;
 
-    public DrawPane(String persona) {
-
+    public DrawPane() throws IOException, ClassNotFoundException {
+        personas=con.getValores();
+        for (int i=0; i<personas.length;i++){
+            System.out.println(personas[i]);
+        }
         t.start();
-
         setDoubleBuffered(false);
         addMouseListener(new MouseAdapter() {
             public void mousePressed(MouseEvent e) {
@@ -70,27 +71,17 @@ public class DrawPane extends JComponent {
                     } else {
                         num_stroke = 2;
                     }
-                    //Object[] valores = {oldx, oldy, currentx, currenty, num_stroke, color, persona};
+                    Object[] valores = {oldx, oldy, currentx, currenty, num_stroke, color };
                     oldx = currentx;
                     oldy = currenty;
                     repaint();
-                    /*try {
+                    try {
                         con.sendValores(valores);
                     } catch (IOException ex) {
                         Logger.getLogger(DrawPane.class.getName()).log(Level.SEVERE, null, ex);
-                    }*/
+                    }
 
                 }
-            }
-        });
-        
-        addMouseListener(new MouseAdapter(){
-            public void MouseReleased(MouseEvent e){
-                try {
-                        con.sendValores(image);
-                    } catch (IOException ex) {
-                        Logger.getLogger(DrawPane.class.getName()).log(Level.SEVERE, null, ex);
-                    }
             }
         });
     }
@@ -118,52 +109,53 @@ public class DrawPane extends JComponent {
     }
 
     public void goma() {
-
-        color_prev = color;
+        
+        color_prev=color;
         setColor(Color.WHITE);
         gp.setStroke(stroke_gom);
         current_stroke = stroke_gom;
     }
 
     public void lapiz() {
-        if (gp.getStroke() == stroke_gom) {
-            setColor(color_prev);
-        }
+        if(gp.getStroke()==stroke_gom){
+        setColor(color_prev);}
         gp.setStroke(stroke_lap);
         gp.setPaint(this.color);
         current_stroke = stroke_lap;
     }
 
     public void fibron() {
-        if (gp.getStroke() == stroke_gom) {
-            setColor(color_prev);
-        }
+        if(gp.getStroke()==stroke_gom){
+        setColor(color_prev);}
         gp.setStroke(stroke_fib);
         gp.setPaint(this.color);
         current_stroke = stroke_fib;
     }
 
-    public void getDraw(Image image) {
-        /*if ((int) valores[4] == 0) {
-            gp.setStroke(stroke_lap);
-        } else if ((int) valores[4] == 1) {
-            gp.setStroke(stroke_fib);
-        } else {
-            gp.setStroke(stroke_gom);
+    public void getDraw(Object[] valores) {
+        switch ((int) valores[4]) {
+            case 0:
+                gp.setStroke(stroke_lap);
+                break;
+            case 1:
+                gp.setStroke(stroke_fib);
+                break;
+            default:
+                gp.setStroke(stroke_gom);
+                break;
         }
         gp.setPaint((Color) valores[5]);
         gp.drawLine((int) valores[0], (int) valores[1], (int) valores[2], (int) valores[3]);
         repaint();
         gp.setStroke(current_stroke);
-        gp.setPaint(this.color);*/
-        
-        gp.drawImage(image,0, 0,null);
+        gp.setPaint(this.color);
 
     }
-
-    public String getPersonas() throws IOException, ClassNotFoundException {
-        return con.getPersonas();
+    
+    public Object[] getPersonas(){
+        return this.personas;
     }
+
 
     private class Lector implements Runnable {
 
