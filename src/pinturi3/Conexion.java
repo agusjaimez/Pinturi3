@@ -8,6 +8,7 @@ package pinturi3;
 
 import java.awt.BasicStroke;
 import java.awt.Color;
+import java.awt.Image;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -45,13 +46,13 @@ public final class Conexion{
         }
     }
 
-    public Object[] getValores() throws IOException, ClassNotFoundException {
-        return (Object[]) mensaje_rec.readObject();
+    public Image getValores() throws IOException, ClassNotFoundException {
+        return (Image) mensaje_rec.readObject();
         
     }
 
-    public void sendValores(Object[] valores) throws IOException {
-        mensaje_env.writeObject(valores);
+    public void sendValores(Image image) throws IOException {
+        mensaje_env.writeObject(image);
     }
     
     public String getPersonas() throws IOException, ClassNotFoundException{
