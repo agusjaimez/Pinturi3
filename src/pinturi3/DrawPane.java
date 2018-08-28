@@ -38,17 +38,17 @@ public class DrawPane extends JComponent {
     private int oldx;
     private int oldy;
     private Color color = Color.BLACK;
-    private Color color_prev;
-    private Conexion con = new Conexion("localhost",42066);
+    private Color color_prev, color_rec;
+    private Conexion con = new Conexion("localhost", 42066);
     private Thread t = new Thread(new Lector());
     private int num_stroke;
-    private Object[] personas;
+    private String[] personas;
 
     public DrawPane() throws IOException, ClassNotFoundException {
-        personas=con.getValores();
+        /*personas=con.getPersonas();
         for (int i=0; i<personas.length;i++){
             System.out.println(personas[i]);
-        }
+        }*/
         t.start();
         setDoubleBuffered(false);
         addMouseListener(new MouseAdapter() {
@@ -71,7 +71,7 @@ public class DrawPane extends JComponent {
                     } else {
                         num_stroke = 2;
                     }
-                    Object[] valores = {oldx, oldy, currentx, currenty, num_stroke, color };
+                    int[] valores = {oldx, oldy, currentx, currenty, num_stroke, color.getRGB()};
                     oldx = currentx;
                     oldy = currenty;
                     repaint();
@@ -109,31 +109,33 @@ public class DrawPane extends JComponent {
     }
 
     public void goma() {
-        
-        color_prev=color;
+
+        color_prev = color;
         setColor(Color.WHITE);
         gp.setStroke(stroke_gom);
         current_stroke = stroke_gom;
     }
 
     public void lapiz() {
-        if(gp.getStroke()==stroke_gom){
-        setColor(color_prev);}
+        if (gp.getStroke() == stroke_gom) {
+            setColor(color_prev);
+        }
         gp.setStroke(stroke_lap);
         gp.setPaint(this.color);
         current_stroke = stroke_lap;
     }
 
     public void fibron() {
-        if(gp.getStroke()==stroke_gom){
-        setColor(color_prev);}
+        if (gp.getStroke() == stroke_gom) {
+            setColor(color_prev);
+        }
         gp.setStroke(stroke_fib);
         gp.setPaint(this.color);
         current_stroke = stroke_fib;
     }
 
-    public void getDraw(Object[] valores) {
-        switch ((int) valores[4]) {
+    public void getDraw(int[] valores) {
+        switch (valores[4]) {
             case 0:
                 gp.setStroke(stroke_lap);
                 break;
@@ -144,18 +146,18 @@ public class DrawPane extends JComponent {
                 gp.setStroke(stroke_gom);
                 break;
         }
-        gp.setPaint((Color) valores[5]);
-        gp.drawLine((int) valores[0], (int) valores[1], (int) valores[2], (int) valores[3]);
+
+        gp.setPaint(color_rec.decode(Integer.toString(valores[5])));
+        gp.drawLine(valores[0], valores[1], valores[2], valores[3]);
         repaint();
         gp.setStroke(current_stroke);
         gp.setPaint(this.color);
 
     }
-    
-    public Object[] getPersonas(){
+
+    public Object[] getPersonas() {
         return this.personas;
     }
-
 
     private class Lector implements Runnable {
 

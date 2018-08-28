@@ -23,7 +23,6 @@ import java.util.logging.Logger;
 public final class Conexion{
 
     private Socket s;
-    private Object[] a;
     private ObjectInputStream mensaje_rec;
     private final int port; //estamos usando el reto de los 65534 puertos
     private final String host;
@@ -45,17 +44,16 @@ public final class Conexion{
         }
     }
 
-    public Object[] getValores() throws IOException, ClassNotFoundException {
-        return (Object[]) mensaje_rec.readObject();
+    public int[] getValores() throws IOException, ClassNotFoundException {
+        return (int[]) mensaje_rec.readObject();
         
     }
 
-    public void sendValores(Object[] valores) throws IOException {
+    public void sendValores(int[] valores) throws IOException {
         mensaje_env.writeObject(valores);
     }
     
-    public String getPersonas() throws IOException, ClassNotFoundException{
-    a=(Object[])mensaje_rec.readObject();
-    return (String) a[6];}
+    /*public String[] getPersonas() throws IOException, ClassNotFoundException{
+    return (String[]) mensaje_rec.readObject();}*/
     
 }
