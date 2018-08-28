@@ -40,7 +40,6 @@ public class Window {
     private JTextArea personas_txt;
     private JScrollPane personas;
     private JLabel top;
-    private Conexion con;
     private String[] contenido_txt;
     private Boolean b, a;
     private Thread t = new Thread(new Lector());
@@ -71,22 +70,21 @@ public class Window {
         }
     };
 
-    public Window() {
+    public Window() throws IOException, ClassNotFoundException {
         initComponents();
         window.setVisible(true);
     }
 
-    public void initComponents() {
+    public void initComponents() throws IOException, ClassNotFoundException {
         window = new JFrame();
         ecolor = new JColorChooser();
         windowcolor = new JFrame();
         Container content2 = windowcolor.getContentPane();
         Container content = window.getContentPane();
-        con = new Conexion("localhost", 42066);
         t.start();
 
         content.setLayout(new BorderLayout());
-        draw = new DrawPane("Jaimez");
+        draw = new DrawPane();
         content.add(draw, BorderLayout.CENTER);
 
         borrar = new JButton("Borrar");
@@ -153,29 +151,22 @@ public class Window {
 
         public void run() {
             while (a = true) {
-                try {
-                    if (personas_txt != null) {
-                        if (personas_txt.getText() != null) {
-                            contenido_txt = personas_txt.getText().split("\n");
-                            for (int i = 0; i < contenido_txt.length; i++) {
-                                if (contenido_txt[i].equals(con.getPersonas())) {
-                                    b = false;
-                                } else {
-                                    b = true;
-                                }
+                if (personas_txt != null) {
+                    if (personas_txt.getText() != null) {
+                        contenido_txt = personas_txt.getText().split("\n");
+                        for (int i = 0; i < contenido_txt.length; i++) {
+                            if (contenido_txt[i].equals(draw.getPersonas())) {
+                                b = false;
+                            } else {
+                                b = true;
                             }
-                            if (b == true) {
-                                personas_txt.append(con.getPersonas() + "\n");
-                            }
-                        } else {
-                            personas_txt.append(con.getPersonas() + "\n");
                         }
+                        if (b == true) {
+                            personas_txt.append(draw.getPersonas() + "\n");
+                        }
+                    } else {
+                        personas_txt.append(draw.getPersonas() + "\n");
                     }
-
-                } catch (IOException ex) {
-                    Logger.getLogger(Window.class.getName()).log(Level.SEVERE, null, ex);
-                } catch (ClassNotFoundException ex) {
-                    Logger.getLogger(Window.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
 
