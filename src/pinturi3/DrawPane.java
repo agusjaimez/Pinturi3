@@ -42,13 +42,8 @@ public class DrawPane extends JComponent {
     private Conexion con = new Conexion("localhost", 42066);
     private Thread t = new Thread(new Lector());
     private int num_stroke;
-    private String[] personas;
 
     public DrawPane() throws IOException, ClassNotFoundException {
-        /*personas=con.getPersonas();
-        for (int i=0; i<personas.length;i++){
-            System.out.println(personas[i]);
-        }*/
         t.start();
         setDoubleBuffered(false);
         addMouseListener(new MouseAdapter() {
@@ -154,11 +149,10 @@ public class DrawPane extends JComponent {
         gp.setPaint(this.color);
 
     }
-
-    public Object[] getPersonas() {
-        return this.personas;
+    
+    public String getDireccion(){
+        return con.getDireccion();
     }
-
     private class Lector implements Runnable {
 
         public void run() {

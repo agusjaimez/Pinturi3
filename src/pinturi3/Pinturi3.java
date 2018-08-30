@@ -6,6 +6,7 @@
 package pinturi3;
 
 import java.io.IOException;
+import java.sql.SQLException;
 
 /**
  *
@@ -16,8 +17,8 @@ public class Pinturi3 {
     /**
      * @param args the command line arguments
      */
-    public static void main(String[] args) throws IOException, ClassNotFoundException {
-        Window ventana=new Window();
+    public static void main(String[] args) throws IOException, ClassNotFoundException, SQLException {
+        Window ventana=new Window("Jaimez");
     }
     
 }

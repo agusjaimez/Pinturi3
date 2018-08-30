@@ -6,6 +6,7 @@
 package pinturi3;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.ComponentOrientation;
 import java.awt.Container;
 import java.awt.Dimension;
@@ -14,6 +15,7 @@ import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.IOException;
+import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.BoxLayout;
@@ -40,8 +42,9 @@ public class Window {
     private JTextArea personas_txt;
     private JScrollPane personas;
     private JLabel top;
-    private String[] contenido_txt;
-    private Boolean b, a;
+    private String user;
+    private Component[] contenido_txt;
+    private ConexionMysql cnx;
     private Thread t = new Thread(new Lector());
     private ActionListener action = new ActionListener() {
         public void actionPerformed(ActionEvent e) {
@@ -70,18 +73,23 @@ public class Window {
         }
     };
 
-    public Window() throws IOException, ClassNotFoundException {
+    public Window(String user) throws IOException, ClassNotFoundException, SQLException {
+        this.user=user;
         initComponents();
+        cnx.setPersonas(cnx.obtener(), user,draw.getDireccion());
+        t.start();
         window.setVisible(true);
     }
 
-    public void initComponents() throws IOException, ClassNotFoundException {
+    public void initComponents() throws IOException, ClassNotFoundException, SQLException {
+        cnx=new ConexionMysql();
         window = new JFrame();
+        window.setResizable(false);
         ecolor = new JColorChooser();
         windowcolor = new JFrame();
         Container content2 = windowcolor.getContentPane();
         Container content = window.getContentPane();
-        t.start();
+        
 
         content.setLayout(new BorderLayout());
         draw = new DrawPane();
@@ -129,6 +137,7 @@ public class Window {
         content2.add(aoc, BorderLayout.SOUTH);
         personas_txt = new JTextArea();
         personas_txt.setSize(200, 200);
+        personas_txt.setEditable(false);
 
         personas = new JScrollPane(personas_txt);
 
@@ -146,35 +155,26 @@ public class Window {
         windowcolor.setLocationRelativeTo(null);
 
     }
+    
+    private int cerrarVentana() throws SQLException, ClassNotFoundException{
+        cnx.cerrar(cnx.obtener(), this.user);
+        return 3;
+    }
 
     private class Lector implements Runnable {
 
         public void run() {
-            while (a = true) {
-                if (personas_txt != null) {
-                    if (personas_txt.getText() != null) {
-                        contenido_txt = personas_txt.getText().split("\n");
-                        for (int i = 0; i < contenido_txt.length; i++) {
-                            if (contenido_txt[i].equals(draw.getPersonas())) {
-                                b = false;
-                            } else {
-                                b = true;
-                            }
-                        }
-                        if (b == true) {
-                            personas_txt.append(draw.getPersonas() + "\n");
-                        }
-                    } else {
-                        personas_txt.append(draw.getPersonas() + "\n");
-                    }
+            while (true) {
+                try {
+                    personas_txt.setText(cnx.getPersonas(cnx.obtener()));
+                } catch (SQLException ex) {
+                    Logger.getLogger(Window.class.getName()).log(Level.SEVERE, null, ex);
+                } catch (ClassNotFoundException ex) {
+                    Logger.getLogger(Window.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
 
         }
-    }
-
-    public void personasConectadas(String persona) {
-
     }
 
 }

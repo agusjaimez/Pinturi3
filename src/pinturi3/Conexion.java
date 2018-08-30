@@ -45,7 +45,8 @@ public final class Conexion{
     }
 
     public int[] getValores() throws IOException, ClassNotFoundException {
-        return (int[]) mensaje_rec.readObject();
+        return  (int[]) mensaje_rec.readObject();
+        
         
     }
 
@@ -53,7 +54,8 @@ public final class Conexion{
         mensaje_env.writeObject(valores);
     }
     
-    /*public String[] getPersonas() throws IOException, ClassNotFoundException{
-    return (String[]) mensaje_rec.readObject();}*/
+    public String getDireccion(){
+        return s.getInetAddress().getHostAddress();
+    }
     
 }
